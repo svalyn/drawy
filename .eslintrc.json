@@ -1,0 +1,12 @@
+{
+  "root": true,
+  "parser": "@typescript-eslint/parser",
+  "plugins": ["@typescript-eslint"],
+  "extends": ["eslint:recommended", "plugin:@typescript-eslint/recommended", "plugin:react-hooks/recommended"],
+  "ignorePatterns": ["*.css"],
+  "rules": {
+    "react-hooks/exhaustive-deps": 2,
+    "@typescript-eslint/no-explicit-any": "error",
+    "@typescript-eslint/explicit-function-return-type": "error"
+  }
+}

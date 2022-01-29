@@ -1,0 +1,43 @@
+name: Continuous Integration
+
+on:
+  push:
+    paths-ignore:
+      - 'doc/**'
+    branches:
+      - '**'
+    tags:
+      - '*'
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  build:
+    name: Build
+    runs-on: ubuntu-latest
+    if: github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name != github.event.pull_request.base.repo.full_name
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Setup Node SDK
+        uses: actions/setup-node@v1.4.4
+        with:
+          node-version: 16
+          registry-url: https://npm.pkg.github.com/
+
+      - name: Cache Node.js modules
+        uses: actions/cache@v2
+        with:
+          path: ~/.npm
+          key: ${{ runner.OS }}-node-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.OS }}-node-
+            ${{ runner.OS }}-
+
+      - name: Build the frontend
+        run: |
+          npm ci
+          npm run-script format-lint
+          npm run-script lint
+          npm run build
